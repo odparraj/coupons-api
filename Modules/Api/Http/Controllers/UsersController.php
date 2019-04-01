@@ -9,6 +9,8 @@ use Modules\Base\Http\Controllers\BaseController;
 use Modules\Api\Repositories\UserRepository;
 use Modules\Api\Entities\UserLoginAttemptModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Api\Entities\UserModel;
 
 class UsersController extends BaseController
 {
@@ -105,5 +107,38 @@ class UsersController extends BaseController
 
         return response($result, $codeResult);
     }
+
+    public function syncRoles(Request $request, UserModel $user)
+    {
+        $rolesTableName = config('permission.table_names.roles');
+
+        $request->validate([
+            '*.id' => "required|exists:{$rolesTableName},uuid"
+        ]);
+
+        // No es necesario limpiar la data porque la funcion SyncPermissions de la librería de roles y permisos
+        // lo contempla, al final la data de entrada se filtra para obtener instancias validas del modelo Role
+        $user->syncRoles($request->all());
+
+        return JsonResponse::collection($user->roles);
+    }
+
+    public function userRoles(Request $request, UserModel $user){
+        return JsonResponse::collection($user->roles);
+    }
 }
+
+class JsonResponse extends  JsonResource
+{
+    public function toArray($request)
+    {
+        return [
+            'id'=> $this->uuid,
+            'name'=> $this->name
+        ];
+    }
+
+}
+
+
 

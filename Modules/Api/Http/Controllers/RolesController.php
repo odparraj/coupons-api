@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Modules\Api\Entities\RoleModel;
 use Modules\Api\Repositories\RoleRepository;
 use Modules\Base\Http\Controllers\BaseController;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class RolesController extends BaseController
 {
@@ -28,12 +29,32 @@ class RolesController extends BaseController
         $permissionsTableName = config('permission.table_names.permissions');
 
         $request->validate([
-            '*.id' => "exists:{$permissionsTableName},uuid"
+            '*.id' => "required|exists:{$permissionsTableName},uuid"
         ]);
 
+        // No es necesario limpiar la data porque la funcion SyncPermissions de la librería de roles y permisos
+        // lo contempla, al final la data de entrada se filtra para obtener instancias validas del modelo Permission
         $role->syncPermissions($request->all());
 
-        return response()->json(['data'=>$request->all()]);
+        return JsonResponse::collection($role->permissions);
     }
 
+    public function rolePermissions(Request $request, RoleModel $role)
+    {
+        return JsonResponse::collection($role->permissions);
+    }
+
+}
+
+// Ojo adaptar a la logica del repositorio
+class JsonResponse extends JsonResource
+{
+    public function toArray($request)
+    {
+        return [
+
+            'id'=> $this->uuid,
+            'name'=> $this->name
+        ];
+    }
 }

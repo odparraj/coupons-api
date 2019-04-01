@@ -79,4 +79,17 @@ class RoleModel extends Role
         return $permissions;
     }
 
+    public static function findByUuid(string $uuid, $guardName = null)
+    {
+        $guardName = $guardName ?? Guard::getDefaultName(static::class);
+
+        $role = static::where('uuid', $uuid)->where('guard_name', $guardName)->first();
+
+        if (! $role) {
+            throw RoleDoesNotExist::withId($uuid);
+        }
+
+        return $role;
+    }
+
 }
