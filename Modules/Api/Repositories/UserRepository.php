@@ -2,14 +2,14 @@
 
 namespace Modules\Api\Repositories;
 
-use Modules\Base\Repositories\RepositoryAbstract;
+use Modules\Base\Repositories\aResourceRepository;
 use Modules\Api\Entities\UserModel;
-use Modules\Api\Transformers\UserTransformer;
+use Modules\Api\Http\Resources\UserJsonResource;
 
-class UserRepository extends RepositoryAbstract
+class UserRepository extends aResourceRepository
 {
     protected $model = UserModel::class;
-    protected $transformer = UserTransformer::class;
+    protected $jsonResource = UserJsonResource::class;
 }
 
 

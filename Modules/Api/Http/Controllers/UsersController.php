@@ -3,21 +3,27 @@
 namespace Modules\Api\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
+use Modules\Api\Entities\UserModel;
+use Modules\Api\Http\Middleware\UsersMiddleware;
 use Modules\Base\Http\Controllers\BaseController;
 use Modules\Api\Repositories\UserRepository;
 use Modules\Api\Entities\UserLoginAttemptModel;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Api\Entities\UserModel;
+use Modules\Base\General\ResponseBuilder;
+use Modules\Base\Http\Middleware\iPermissibleMiddleware;
+use Modules\Base\Http\Resources\UuidNameJsonResource;
+use Modules\Base\General\ApiCode;
 
-class UsersController extends BaseController
+class UsersController extends BaseController implements iPermissibleMiddleware
 {
     protected $uuidToId = [
         //'product_type_id'=> \Modules\CoreBanking\Entities\ProductTypeModel::class,
         //'company_id'=> \Modules\CoreBanking\Entities\CompanyModel::class,
     ];
+    
     //companies agregar
     protected $arrValidate = [
         'name' => 'required|string|max:255',
@@ -28,6 +34,8 @@ class UsersController extends BaseController
     public function __construct(UserRepository $repository)
     {
         parent::__construct($repository);
+        
+        $this->applyPermissibleMiddleware();
     }
 
     protected function __storeGet(Request $request)
@@ -56,10 +64,7 @@ class UsersController extends BaseController
 
     public function login(Request $request)
     {
-        $result = [
-            "error" => 'Error en las credenciales.'
-        ];
-        $codeResult = 403;
+        $response = null;
 
         $credentials = $request->only('email', 'password');
 
@@ -73,25 +78,21 @@ class UsersController extends BaseController
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent()
             ]);
-
-            $codeResult = 200;
-            $result = [
-                "data" => [
-                    'name' => $user->name,
-                    'token' => $apiKey
-                ]
+            
+            $data = [
+                'name' => $user->name,
+                'token' => $apiKey
             ];
+
+            $response = ResponseBuilder::success($data);
         }
 
-        return response($result, $codeResult);
+        return $response ?? ResponseBuilder::error(ApiCode::AUTH_INVALID_CREDENTIALS);
     }
 
     public function logout(Request $request)
     {
-        $result = [
-            "error" => 'Usuario no autenticado.'
-        ];
-        $codeResult = 403;
+        $response = null;
 
         if( Auth::check() ) {
 
@@ -99,13 +100,10 @@ class UsersController extends BaseController
             $user->api_token = null;
             $user->save();
 
-            $codeResult = 200;
-            $result = [
-                'data' => 'Usuario deslogueado.'
-            ];
+            $response = ResponseBuilder::success();
         }
 
-        return response($result, $codeResult);
+        return $response ?? ResponseBuilder::error(ApiCode::AUTH_UNAUTHORIZED);
     }
 
     public function syncRoles(Request $request, UserModel $user)
@@ -116,29 +114,29 @@ class UsersController extends BaseController
             '*.id' => "required|exists:{$rolesTableName},uuid"
         ]);
 
-        // No es necesario limpiar la data porque la funcion SyncPermissions de la librería de roles y permisos
-        // lo contempla, al final la data de entrada se filtra para obtener instancias validas del modelo Role
-        $user->syncRoles($request->all());
+        // Limpiamos la data obteniendo solo los uuid's
+        $roles = Arr::pluck($request->all(),'id');
 
-        return JsonResponse::collection($user->roles);
+        $user->syncRoles($roles);
+
+        return $this->userRoles($user);
     }
 
-    public function userRoles(Request $request, UserModel $user){
-        return JsonResponse::collection($user->roles);
-    }
-}
-
-class JsonResponse extends  JsonResource
-{
-    public function toArray($request)
+    public function userRoles(UserModel $user)
     {
-        return [
-            'id'=> $this->uuid,
-            'name'=> $this->name
-        ];
+        $result = UuidNameJsonResource::collection($user->roles);
+
+        return ResponseBuilder::success($result->resolve());
     }
 
+    public function meRoles(Request $request)
+    {
+        return $this->userRoles($request->user());
+    }
+
+    public function applyPermissibleMiddleware()
+    {
+        return $this->middleware(UsersMiddleware::class);
+    }
 }
-
-
 

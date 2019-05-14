@@ -42,6 +42,12 @@ class Kernel extends HttpKernel
             'bindings',
             'cors'
         ],
+        
+        'contact' => [
+            'throttle:60,1',
+            'bindings',
+            'cors'
+        ]
     ];
 
     /**

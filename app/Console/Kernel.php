@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        // Comando para sincronizar los permisos
+        \Modules\Base\Console\SyncPermissionsCommand::class,
     ];
 
     /**

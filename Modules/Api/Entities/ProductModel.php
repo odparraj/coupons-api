@@ -1,19 +1,19 @@
 <?php
 
+
 namespace Modules\Api\Entities;
+
 
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Wildside\Userstamps\Userstamps;
-use Spatie\Permission\Models\Permission;
+use Vanilo\Product\Models\Product;
 
-class PermissionModel extends Permission
+class ProductModel extends Product
 {
-    use SoftDeletes, Filterable, Userstamps;
+    use SoftDeletes;
+    use Filterable;
 
     protected $primaryKey = 'id';
-
-    protected $fillable = ['name', 'guard_name', 'uuid'];
 
     /**
      * Indicates if the model should be timestamped.
@@ -46,16 +46,4 @@ class PermissionModel extends Permission
 
         return $filter;
     }
-
-    public static function findByUuid(string $uuid, $guardName = null)
-    {
-        $guardName = $guardName ?? Guard::getDefaultName(static::class);
-        $permission = static::getPermissions(['uuid' => $uuid, 'guard_name' => $guardName])->first();
-        if (! $permission) {
-            throw PermissionDoesNotExist::create($uuid, $guardName);
-        }
-
-        return $permission;
-    }
-
 }

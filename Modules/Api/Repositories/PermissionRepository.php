@@ -2,12 +2,12 @@
 
 namespace Modules\Api\Repositories;
 
-use Modules\Base\Repositories\RepositoryAbstract;
+use Modules\Base\Repositories\aResourceRepository;
 use Modules\Api\Entities\PermissionModel;
-use Modules\Api\Transformers\PermissionTransformer;
+use Modules\Api\Http\Resources\PermissionJsonResource;
 
-class PermissionRepository extends RepositoryAbstract
+class PermissionRepository extends aResourceRepository
 {
     protected $model = PermissionModel::class;
-    protected $transformer = PermissionTransformer::class;
+    protected $jsonResource = PermissionJsonResource::class;
 }

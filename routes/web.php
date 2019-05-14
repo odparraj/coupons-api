@@ -11,6 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', '\Modules\Api\Http\Controllers\ApiController@changeLog');
+
+/*Route::get('/', function () {
+    $project = [
+        'name' => 'Aliatu - API',
+        'description' => 'Aliatu - API',
+        'version' => '1.0.0',
+        'company' => 'Zinobe',
+        'versions' => [          
+            '1.0.0' => 'Initial version'
+
+        ]
+    ];
+    
+    return view('welcome', ['project' => $project]);
+});*/

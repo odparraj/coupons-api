@@ -4,6 +4,8 @@ namespace Modules\Api\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\Api\Entities\PermissionModel;
+use Modules\Api\Observers\PermissionObserver;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -26,6 +28,9 @@ class ApiServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+        
+        //Cargo los observadores
+        PermissionModel::observe(PermissionObserver::class);
     }
 
     /**

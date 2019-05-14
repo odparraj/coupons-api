@@ -1,23 +1,35 @@
 {
-    "name": "aliatu/admin-api",
+    "name": "base-project/admin-api",
     "type": "project",
-    "description": "aliatu admin api",
+    "description": "base-project admin api",
     "keywords": [
         "framework",
         "laravel"
+    ],
+    "repositories":[
+        {
+            "type": "vcs",
+            "url":"git@github.com:odparraj/base.git"
+        }
     ],
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
         "barryvdh/laravel-cors": "^0.11.3",
+        "bugsnag/bugsnag-laravel": "^2.0",
+        "cviebrock/eloquent-sluggable": "~4.2",
+        "darkaonline/l5-swagger": "^5.8",
+        "doctrine/dbal": "^2.9",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "league/fractal": "^0.17.0",
+        "marcin-orlowski/laravel-api-response-builder": "^4.1",
         "nwidart/laravel-modules": "^4.0",
+        "odparraj/base-module": "^1.0.0",
         "ramsey/uuid": "^3.8",
         "spatie/laravel-permission": "^2.36",
         "tucker-eric/eloquentfilter": "^1.4",
+        "vanilo/product": "^0.5.1",
         "wildside/userstamps": "^0.5.5"
     },
     "require-dev": {

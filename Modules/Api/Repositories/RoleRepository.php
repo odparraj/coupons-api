@@ -2,34 +2,28 @@
 
 namespace Modules\Api\Repositories;
 
-use Modules\Api\Entities\PermissionModel;
-use Modules\Base\Repositories\RepositoryAbstract;
+use Modules\Base\Repositories\aResourceRepository;
 use Modules\Api\Entities\RoleModel;
-use Modules\Api\Transformers\RoleTransformer;
+use Modules\Api\Http\Resources\RoleJsonResource;
 
-class RoleRepository extends RepositoryAbstract
+class RoleRepository extends aResourceRepository
 {
     protected $model = RoleModel::class;
-    protected $transformer = RoleTransformer::class;
+    protected $jsonResource = RoleJsonResource::class;
 
-    public function syncPermissions($uuid,$permissions)
+    public function syncPermissions($uuid, $permissions)
     {
-        $resource = $this->getModel()
+        $insModel = $this->getModel()
             ->whereUuid($uuid)
             ->first();
 
-        if ($resource instanceof $this->model) {
-            return $this->manager->createData(
-                new Item(
-                    $resource,
-                    $this->getTransformer()
-                )
-            )->toArray();
+        if ($insModel instanceof $this->model) {
+            $class = $this->getBaseJsonResource();
+            $jsonResource = new $class($insModel);
+            
+            return ResponseBuilder::success($jsonResource);
         }
 
         return abort(404);
-        return PermissionModel::whereIn('uuid',$uuids)->get();
     }
-
-
 }

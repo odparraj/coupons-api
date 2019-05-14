@@ -3,12 +3,18 @@
 namespace Modules\Api\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\PaginatedResourceResponse;
+use Illuminate\Support\Arr;
 use Modules\Api\Entities\RoleModel;
+use Modules\Api\Http\Middleware\RolesMiddleware;
 use Modules\Api\Repositories\RoleRepository;
+use Modules\Base\General\ResponseBuilder;
 use Modules\Base\Http\Controllers\BaseController;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Base\Http\Middleware\iPermissibleMiddleware;
+use Modules\Base\Http\Resources\UuidNameJsonResource;
 
-class RolesController extends BaseController
+
+class RolesController extends BaseController implements iPermissibleMiddleware
 {
     protected $uuidToId = [
         //'product_type_id'=> \Modules\CoreBanking\Entities\ProductTypeModel::class,
@@ -22,6 +28,7 @@ class RolesController extends BaseController
     public function __construct(RoleRepository $repository)
     {
         parent::__construct($repository);
+        $this->applyPermissibleMiddleware();
     }
 
     public function syncPermissions(Request $request, RoleModel $role)
@@ -32,29 +39,24 @@ class RolesController extends BaseController
             '*.id' => "required|exists:{$permissionsTableName},uuid"
         ]);
 
-        // No es necesario limpiar la data porque la funcion SyncPermissions de la librería de roles y permisos
-        // lo contempla, al final la data de entrada se filtra para obtener instancias validas del modelo Permission
-        $role->syncPermissions($request->all());
+        // Limpiamos la data obteniendo solo los uuid's
+        $permissions = Arr::pluck($request->all(),'id');
 
-        return JsonResponse::collection($role->permissions);
+        $role->syncPermissions($permissions);
+
+        return $this->rolePermissions($role);
     }
 
-    public function rolePermissions(Request $request, RoleModel $role)
+    public function rolePermissions( RoleModel $role)
     {
-        return JsonResponse::collection($role->permissions);
+        $result = UuidNameJsonResource::collection($role->permissions);
+        
+        return ResponseBuilder::success($result->resolve());
     }
 
-}
-
-// Ojo adaptar a la logica del repositorio
-class JsonResponse extends JsonResource
-{
-    public function toArray($request)
+    public function applyPermissibleMiddleware()
     {
-        return [
-
-            'id'=> $this->uuid,
-            'name'=> $this->name
-        ];
+        return $this->middleware(RolesMiddleware::class);
     }
+
 }
