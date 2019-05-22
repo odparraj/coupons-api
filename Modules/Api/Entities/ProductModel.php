@@ -6,10 +6,18 @@ namespace Modules\Api\Entities;
 
 use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia\HasMedia;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Vanilo\Contracts\Buyable;
 use Vanilo\Product\Models\Product;
+use Vanilo\Support\Traits\BuyableImageSpatieV7;
+use Vanilo\Support\Traits\BuyableModel;
 
-class ProductModel extends Product
+class ProductModel extends Product implements Buyable, HasMedia
 {
+    use BuyableModel; // Implements Buyable methods for common Eloquent models
+    use BuyableImageSpatieV7; // Implements Buyable's image methods using Spatie Media Library
+    use HasMediaTrait; // Spatie package's default trait
     use SoftDeletes;
     use Filterable;
 

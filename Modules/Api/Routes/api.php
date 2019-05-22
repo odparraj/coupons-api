@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Vanilo\Cart\Facades\Cart;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,5 +36,16 @@ Route::middleware('auth:api')->group(function () {
 
     //Products
     Route::apiResource('products', 'ProductsController');
+    
+    Route::get('test',function(Request $request){
+
+        $user = $request->user();
+        Cart::restoreLastActiveCart($user);
+        //Cart::setUser(Auth::user());
+        $product = \Modules\Api\Entities\ProductModel::find(1);
+        Cart::addItem($product,1); //Adds one product to the cart
+        //dd( Cart::itemCount() );
+        //dd( Cart::exists() );
+    });
 
 });
