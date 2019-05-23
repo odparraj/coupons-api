@@ -54,4 +54,8 @@ class ProductModel extends Product implements Buyable, HasMedia
 
         return $filter;
     }
+
+    public function morphTypeName():string{
+        return static::class;
+    }
 }

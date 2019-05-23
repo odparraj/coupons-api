@@ -25,7 +25,8 @@ Route::middleware('auth:api')->group(function () {
     
     //Me
     Route::get('me/roles', 'UsersController@meRoles');
-    Route::post('me/cart', 'CartController@update');
+    Route::post('me/cart', 'CartController@addProduct');
+    Route::delete('me/cart', 'CartController@removeProduct');
 
     //Roles
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
