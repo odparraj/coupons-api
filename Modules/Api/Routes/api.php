@@ -25,6 +25,7 @@ Route::middleware('auth:api')->group(function () {
     
     //Me
     Route::get('me/roles', 'UsersController@meRoles');
+    Route::post('me/cart', 'CartController@update');
 
     //Roles
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
@@ -36,16 +37,5 @@ Route::middleware('auth:api')->group(function () {
 
     //Products
     Route::apiResource('products', 'ProductsController');
-    
-    Route::get('test',function(Request $request){
-
-        $user = $request->user();
-        Cart::restoreLastActiveCart($user);
-        //Cart::setUser(Auth::user());
-        $product = \Modules\Api\Entities\ProductModel::find(1);
-        Cart::addItem($product,1); //Adds one product to the cart
-        //dd( Cart::itemCount() );
-        //dd( Cart::exists() );
-    });
 
 });
