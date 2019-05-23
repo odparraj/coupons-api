@@ -13,6 +13,18 @@ use Vanilo\Cart\Facades\Cart;
 
 class CartController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        Cart::restoreLastActiveCart($user);
+
+        $cartModel= Cart::model();
+        $cartModel->load('items.product');
+
+        return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
+    }
+
     public function addProduct(Request $request)
     {
         $request->validate([

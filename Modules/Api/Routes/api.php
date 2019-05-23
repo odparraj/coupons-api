@@ -25,6 +25,7 @@ Route::middleware('auth:api')->group(function () {
     
     //Me
     Route::get('me/roles', 'UsersController@meRoles');
+    Route::get('me/cart', 'CartController@index');
     Route::post('me/cart', 'CartController@addProduct');
     Route::delete('me/cart', 'CartController@removeProduct');
 

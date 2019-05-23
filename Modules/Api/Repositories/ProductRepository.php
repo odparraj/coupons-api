@@ -12,4 +12,7 @@ class ProductRepository extends aResourceRepository
 {
     protected $model = ProductModel::class;
     protected $jsonResource = ProductJsonResource::class;
+    protected $baseJsonResource= ProductJsonResource::class;
+
+
 }
