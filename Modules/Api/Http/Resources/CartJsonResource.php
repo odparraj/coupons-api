@@ -19,6 +19,7 @@ class CartJsonResource extends JsonResource
         return [
             'state' => $this->getOriginal('state'),
             'total'=> $this->total(),
+            'count'=> $this->itemCount(),
             'items' => CartItemJsonResource::collection($this->whenLoaded('items'))
         ];
     }
