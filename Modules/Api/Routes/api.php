@@ -40,4 +40,7 @@ Route::middleware('auth:api')->group(function () {
     //Products
     Route::apiResource('products', 'ProductsController');
 
+    //Taxonomies
+    Route::apiResource('taxonomies', 'TaxonomiesController')->parameters(['taxonomies' => 'uuid']);
+
 });

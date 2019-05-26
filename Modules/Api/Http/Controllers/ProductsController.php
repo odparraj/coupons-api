@@ -32,11 +32,13 @@ class ProductsController extends BaseController
 
     public function store(Request $request)
     {
+        $images= $request->files->filter('images');
         $response = parent::store($request);
 
-        if (!empty($request->files->filter('images')) && isset($response['data']['id'])) {
+        if (!empty($images) && isset($response['data']['id'])) {
             $product= ProductModel::whereUuid($response['data']['id'])->first();
             if ($product){
+
                 $product->addMultipleMediaFromRequest(['images'])->each(function ($fileAdder) {
                     $fileAdder->toMediaCollection();
                 });
