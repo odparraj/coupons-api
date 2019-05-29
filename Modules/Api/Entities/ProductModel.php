@@ -12,6 +12,7 @@ use Vanilo\Contracts\Buyable;
 use Vanilo\Product\Models\Product;
 use Vanilo\Support\Traits\BuyableImageSpatieV7;
 use Vanilo\Support\Traits\BuyableModel;
+use Wildside\Userstamps\Userstamps;
 
 class ProductModel extends Product implements Buyable, HasMedia
 {
@@ -20,8 +21,12 @@ class ProductModel extends Product implements Buyable, HasMedia
     use HasMediaTrait; // Spatie package's default trait
     use SoftDeletes;
     use Filterable;
+    use Userstamps;
 
     protected $primaryKey = 'id';
+    protected $with= [
+        'parent'
+    ];
 
     /**
      * Indicates if the model should be timestamped.
@@ -57,5 +62,10 @@ class ProductModel extends Product implements Buyable, HasMedia
 
     public function morphTypeName():string{
         return static::class;
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(ProductModel::class,'parent_id','id');
     }
 }

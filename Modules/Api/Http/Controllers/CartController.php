@@ -20,9 +20,13 @@ class CartController extends Controller
         Cart::restoreLastActiveCart($user);
 
         $cartModel= Cart::model();
-        $cartModel->load('items.product');
+        if($cartModel){
+            $cartModel->load('items.product');
+            return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
+        }else{
+            return ResponseBuilder::success([]);
+        }
 
-        return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
     }
 
     public function addProduct(Request $request)

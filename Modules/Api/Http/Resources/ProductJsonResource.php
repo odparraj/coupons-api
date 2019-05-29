@@ -21,7 +21,9 @@ class ProductJsonResource extends JsonResource
             'name' => $this->name,
             'description'=> $this->description,
             'price'=> $this->price,
-            'sku'=> $this->sku
+            'sku'=> $this->sku,
+            'type'=> $this->type,
+            'parent_id'=> $this->when($this->resource->parent, $this->parent->uuid ?? null)
         ];
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Modules\Api\Http\Controllers;
 
-use Modules\Api\Http\Middleware\PermissionsMiddleware;
+use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
 use Modules\Api\Repositories\PermissionRepository;
-use Modules\Base\Http\Controllers\BaseController;
-use Modules\Base\Http\Middleware\iPermissibleMiddleware;
+use Modules\Base\Http\Controllers\BaseController;;
 
-class PermissionsController extends BaseController implements iPermissibleMiddleware
+class PermissionsController extends BaseController
 {
     protected $uuidToId = [
         //'product_type_id'=> \Modules\CoreBanking\Entities\ProductTypeModel::class,
@@ -21,12 +20,7 @@ class PermissionsController extends BaseController implements iPermissibleMiddle
     public function __construct(PermissionRepository $repository)
     {
         parent::__construct($repository);
-        $this->applyPermissibleMiddleware();
-    }
-
-    public function applyPermissibleMiddleware()
-    {
-        return $this->middleware(PermissionsMiddleware::class);
+        $this->middleware(PermissibleMiddleware::class);
     }
 
 }

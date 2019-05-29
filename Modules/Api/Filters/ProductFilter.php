@@ -4,6 +4,7 @@
 namespace Modules\Api\Filters;
 
 
+use Illuminate\Support\Facades\DB;
 use Modules\Base\Filters\BaseFilter;
 
 class ProductFilter extends BaseFilter
@@ -16,5 +17,20 @@ class ProductFilter extends BaseFilter
      */
     public $relations = [];
 
-    protected $arrFieldsSearch = ['id', 'name'];
+    protected $arrFieldsSearch = ['id', 'name', 'created_by', 'type', 'parent_id'];
+
+    public function createdBy($id)
+    {
+        return $this->where('created_by',$id);
+    }
+
+    public function type($type)
+    {
+        return $this->where('type',$type);
+    }
+
+    public function parent($uuid)
+    {
+        return $this->related('parent', 'uuid', '=', $uuid);
+    }
 }

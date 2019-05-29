@@ -7,17 +7,16 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
 use Modules\Api\Entities\UserModel;
-use Modules\Api\Http\Middleware\UsersMiddleware;
+use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
 use Modules\Base\Http\Controllers\BaseController;
 use Modules\Api\Repositories\UserRepository;
 use Modules\Api\Entities\UserLoginAttemptModel;
 use Illuminate\Support\Facades\Auth;
 use Modules\Base\General\ResponseBuilder;
-use Modules\Base\Http\Middleware\iPermissibleMiddleware;
 use Modules\Base\Http\Resources\UuidNameJsonResource;
 use Modules\Base\General\ApiCode;
 
-class UsersController extends BaseController implements iPermissibleMiddleware
+class UsersController extends BaseController
 {
     protected $uuidToId = [
         //'product_type_id'=> \Modules\CoreBanking\Entities\ProductTypeModel::class,
@@ -34,8 +33,8 @@ class UsersController extends BaseController implements iPermissibleMiddleware
     public function __construct(UserRepository $repository)
     {
         parent::__construct($repository);
-        
-        $this->applyPermissibleMiddleware();
+
+        $this->middleware(PermissibleMiddleware::class);
     }
 
     protected function __storeGet(Request $request)
@@ -132,11 +131,6 @@ class UsersController extends BaseController implements iPermissibleMiddleware
     public function meRoles(Request $request)
     {
         return $this->userRoles($request->user());
-    }
-
-    public function applyPermissibleMiddleware()
-    {
-        return $this->middleware(UsersMiddleware::class);
     }
 }
 

@@ -15,6 +15,13 @@ class UpdateProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->uuid('uuid')->after('id');
+
+            $table->enum('type', ['product', 'service' , 'additional'])->after('meta_description');
+            $table->unsignedBigInteger('parent_id')->nullable()->after('type');
+            
+            $table->unsignedInteger('created_by')->nullable()->default(null);//->after('updated_at');
+            $table->unsignedInteger('updated_by')->nullable()->default(null);//->after('created_by');
+            $table->unsignedInteger('deleted_by')->nullable()->default(null);//->after('updated_by');
         });
     }
 
@@ -25,6 +32,6 @@ class UpdateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        //Schema::dropIfExists('products');
     }
 }

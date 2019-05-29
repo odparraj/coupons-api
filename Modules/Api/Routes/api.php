@@ -28,6 +28,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('me/cart', 'CartController@index');
     Route::post('me/cart', 'CartController@addProduct');
     Route::delete('me/cart', 'CartController@removeProduct');
+    Route::post('me/products', 'ProductsController@meProductsStore');
+    Route::get('me/products', 'ProductsController@meProductsIndex');
+    Route::put('me/products/{uuid}', 'ProductsController@meProductsUpdate');
+    Route::get('me/products/{uuid}', 'ProductsController@meProductsShow');
+    Route::delete('me/products/{uuid}', 'ProductsController@meProductsDestroy');
 
     //Roles
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
@@ -38,7 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('permissions', 'PermissionsController');
 
     //Products
-    Route::apiResource('products', 'ProductsController')->parameters(['products' => 'uuid']);
+    //Route::apiResource('products', 'ProductsController')->parameters(['products' => 'uuid']);
 
     //Taxonomies
     Route::apiResource('taxonomies', 'TaxonomiesController')->parameters(['taxonomies' => 'uuid']);

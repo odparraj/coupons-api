@@ -28,4 +28,9 @@ class UserModel extends BaseAuthenticatableModel
 
         return $role;
     }
+
+    public final function products()
+    {
+        return $this->hasMany(ProductModel::class, 'created_by', 'id');
+    }
 }

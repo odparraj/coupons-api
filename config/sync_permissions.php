@@ -7,8 +7,7 @@
  */
 
 return [
-    //Ojo establecer el path al module con / no con \
-    'modules' => [
-        'Modules/Api',
-    ]
+    'middleware' => [
+        'api'
+    ],
 ];

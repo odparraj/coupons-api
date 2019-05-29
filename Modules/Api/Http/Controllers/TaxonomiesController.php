@@ -4,6 +4,7 @@
 namespace Modules\Api\Http\Controllers;
 
 
+use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
 use Modules\Api\Repositories\TaxonomyRepository;
 use Modules\Base\Http\Controllers\BaseController;
 
@@ -20,5 +21,6 @@ class TaxonomiesController extends BaseController
     public function __construct(TaxonomyRepository $repository)
     {
         parent::__construct($repository);
+        $this->middleware(PermissibleMiddleware::class);
     }
 }
