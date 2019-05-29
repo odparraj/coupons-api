@@ -23,7 +23,8 @@ class ProductJsonResource extends JsonResource
             'price'=> $this->price,
             'sku'=> $this->sku,
             'type'=> $this->type,
-            'parent_id'=> $this->when($this->resource->parent, $this->parent->uuid ?? null)
+            'parent_id'=> $this->when($this->resource->parent, $this->parent->uuid ?? null),
+            'user' => $this->when($this->resource->user, $this->user->name)
         ];
     }
 }

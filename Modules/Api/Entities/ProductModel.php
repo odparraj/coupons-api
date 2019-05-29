@@ -25,7 +25,7 @@ class ProductModel extends Product implements Buyable, HasMedia
 
     protected $primaryKey = 'id';
     protected $with= [
-        'parent'
+        'parent', 'user'
     ];
 
     /**
@@ -67,5 +67,10 @@ class ProductModel extends Product implements Buyable, HasMedia
     public function parent()
     {
         return $this->belongsTo(ProductModel::class,'parent_id','id');
+    }
+
+    public  function user()
+    {
+        return $this->belongsTo(UserModel::class,'created_by', 'id');
     }
 }
