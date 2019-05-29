@@ -43,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('permissions', 'PermissionsController');
 
     //Products
+    Route::get('products', 'ProductsController@index');
     //Route::apiResource('products', 'ProductsController')->parameters(['products' => 'uuid']);
 
     //Taxonomies
