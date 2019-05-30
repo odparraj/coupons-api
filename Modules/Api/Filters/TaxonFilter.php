@@ -14,7 +14,11 @@ class TaxonFilter extends BaseFilter
 
     public function parent($uuid)
     {
-        return $this->related('parent','uuid', '=', $uuid);
+        if($uuid=='null'){
+            return $this->whereNull('parent_id');
+        }else{
+            return $this->related('parent','uuid', '=', $uuid);
+        }
     }
 
     public function taxonomy($uuid)
