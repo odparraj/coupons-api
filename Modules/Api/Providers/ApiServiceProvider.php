@@ -5,7 +5,9 @@ namespace Modules\Api\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 use Modules\Api\Entities\PermissionModel;
+use Modules\Api\Entities\QuotaModel;
 use Modules\Api\Observers\PermissionObserver;
+use Modules\Api\Observers\QuotaObserver;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -31,6 +33,7 @@ class ApiServiceProvider extends ServiceProvider
         
         //Cargo los observadores
         PermissionModel::observe(PermissionObserver::class);
+        QuotaModel::observe(QuotaObserver::class);
     }
 
     /**

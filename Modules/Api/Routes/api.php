@@ -50,4 +50,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('taxonomies', 'TaxonomiesController')->parameters(['taxonomies' => 'uuid']);
     Route::apiResource('taxons', 'TaxonsController')->parameters(['taxons' => 'uuid']);
 
+    //Quotas
+    Route::apiResource('quotas', 'QuotasController');
+
 });
