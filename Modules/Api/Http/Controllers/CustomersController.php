@@ -188,4 +188,16 @@ class CustomersController extends BaseController
             return ResponseBuilder::error(110);
         }
     }
+
+    public function meQuota(Request $request)
+    {
+        $quota= $request->user()->quota;
+        return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
+    }
+
+    public function meTransactions(Request $request)
+    {
+        $transactions= $request->user()->quota->transactions()->paginate(15);
+        return ResponseBuilder::success(TransactionJsonResource::collection($transactions));
+    }
 }

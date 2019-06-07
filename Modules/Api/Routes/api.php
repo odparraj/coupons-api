@@ -67,7 +67,8 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('quotas', 'QuotasController');
 
     Route::group(['middleware'=>['role:customer'], 'prefix'=>'customers'] , function (){
-
+        Route::get('me/quota', 'CustomersController@meQuota');
+        Route::get('me/transactions', 'CustomersController@meTransactions');
     });
 
 });
