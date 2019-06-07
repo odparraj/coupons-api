@@ -16,28 +16,11 @@ class UserFilter extends BaseFilter
      */
     public $relations = [];
 
-    protected $arrFieldsSearch = ['id', 'name', 'username'];
+    protected $arrFieldsSearch = ['id', 'name', 'username', 'created_by'];
 
-    /*public function service($uuid)
+    public function createdBy($id)
     {
-         $service = ServiceModel::whereUuid($uuid)->first(['id']);
-
-         $idService = is_null($service)? null : $service->id;
-
-         $this->where('service_id', '=', $idService);
-
-         return $this;
-    }*/
-
-    /*public function type($uuid)
-    {
-        $type = IncidentTypeModel::whereUuid($uuid)->first(['id']);
-
-        $idType = is_null($type)? null : $type->id;
-
-        $this->where('incident_type_id', '=', $idType);
-
-        return $this;
-    }*/
+        return $this->where('created_by',$id);
+    }
 }
 

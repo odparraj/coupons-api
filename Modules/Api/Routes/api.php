@@ -25,14 +25,22 @@ Route::middleware('auth:api')->group(function () {
     
     //Me
     Route::get('me/roles', 'UsersController@meRoles');
+
     Route::get('me/cart', 'CartController@index');
     Route::post('me/cart', 'CartController@addProduct');
     Route::delete('me/cart', 'CartController@removeProduct');
+
     Route::post('me/products', 'ProductsController@meProductsStore');
     Route::get('me/products', 'ProductsController@meProductsIndex');
     Route::put('me/products/{uuid}', 'ProductsController@meProductsUpdate');
     Route::get('me/products/{uuid}', 'ProductsController@meProductsShow');
     Route::delete('me/products/{uuid}', 'ProductsController@meProductsDestroy');
+
+    Route::post('me/customers', 'CustomersController@meCustomersStore');
+    Route::get('me/customers', 'CustomersController@meCustomersIndex');
+    Route::put('me/customers/{uuid}', 'CustomersController@meCustomersUpdate');
+    Route::get('me/customers/{uuid}', 'CustomersController@meCustomersShow');
+    Route::delete('me/customers/{uuid}', 'CustomersController@meCustomersDestroy');
 
     //Roles
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
@@ -52,5 +60,9 @@ Route::middleware('auth:api')->group(function () {
 
     //Quotas
     Route::apiResource('quotas', 'QuotasController');
+
+    Route::group(['middleware'=>['role:customer'], 'prefix'=>'customers'] , function (){
+
+    });
 
 });

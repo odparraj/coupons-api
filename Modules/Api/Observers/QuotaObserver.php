@@ -14,7 +14,7 @@ class QuotaObserver
     {
         $quotaModel->uuid= Uuid::uuid4();
         $quotaModel->amount_available= $quotaModel->amount_enabled;
-        $quotaModel->is_active= true;
+        $quotaModel->is_active= false;
     }
 
     /**

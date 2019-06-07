@@ -33,4 +33,23 @@ class UserModel extends BaseAuthenticatableModel
     {
         return $this->hasMany(ProductModel::class, 'created_by', 'id');
     }
+
+    public final function customers()
+    {
+        return $this->hasMany(UserModel::class, 'created_by', 'id');
+    }
+
+    public function assignQuota($amountEnabled=0)
+    {
+        if($this->hasRole('customer')){
+            $this->quota()->create([
+                'amount_enabled' => $amountEnabled,
+            ]);
+        }
+    }
+
+    public function quota()
+    {
+        return $this->hasOne(QuotaModel::class,'user_id','id');
+    }
 }
