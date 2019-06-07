@@ -136,7 +136,6 @@ class CustomersController extends BaseController
     {
         $request->validate([
             'amount'=> 'required|numeric',
-            'is_active'=> 'boolean',
         ]);
 
         if($request->user()->customers()->whereUuid($uuid)->count()>0){
@@ -151,9 +150,6 @@ class CustomersController extends BaseController
                 $quota->amount_enabled += $request->amount;
                 $quota->amount_available= $newAmount;
 
-                if( isset($input['is_active']) ){
-                    $quota->is_active= $request->is_active;
-                }
 
                 $quota->save();
 
@@ -172,6 +168,22 @@ class CustomersController extends BaseController
                 return ResponseBuilder::errorWithHttpCode(110,422);
             }
 
+        }else {
+            return ResponseBuilder::error(110);
+        }
+    }
+
+    public function changeActiveQuota(Request $request, $uuid)
+    {
+        $request->validate([
+            'is_active'=> 'required|boolean',
+        ]);
+
+        if($request->user()->customers()->whereUuid($uuid)->count()>0){
+            $quota= $request->user()->customers()->whereUuid($uuid)->first()->quota;
+            $quota->is_active= $request->is_active;
+            $quota->save();
+            return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
         }else {
             return ResponseBuilder::error(110);
         }

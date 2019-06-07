@@ -22,5 +22,11 @@ class OperationTypesTableSeeder extends Seeder
             'name' => 'Asignación de cupo',
             'description' => 'Esta operación establece el cupo del usuario cliente'
         ]);
+
+        OperationTypeModel::create([
+            'uuid' => Uuid::uuid4(),
+            'name' => 'Actualizacion de cupo',
+            'description' => 'Esta operación permite actualizar el amount del cupo y activarlo o desactivarlo'
+        ]);
     }
 }

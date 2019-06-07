@@ -43,6 +43,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('me/customers/{uuid}', 'CustomersController@meCustomersDestroy');
 
     Route::post('me/customers/{uuid}/quota-update', 'CustomersController@updateQuota');
+    Route::post('me/customers/{uuid}/quota-change-active', 'CustomersController@changeActiveQuota');
     Route::get('me/customers/{uuid}/quota', 'CustomersController@getQuota');
     Route::get('me/customers/{uuid}/transactions', 'CustomersController@getTransactions');
 
