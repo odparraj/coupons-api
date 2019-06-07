@@ -43,7 +43,6 @@ class QuotaObserver
      */
     public function updated(QuotaModel $quotaModel)
     {
-        //
     }
 
     /**

@@ -5,12 +5,17 @@ namespace Modules\Api\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Hash;
 use Modules\Api\Entities\ProductModel;
+use Modules\Api\Entities\TransactionModel;
 use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
+use Modules\Api\Http\Resources\QuotaJsonResource;
+use Modules\Api\Http\Resources\TransactionJsonResource;
 use Modules\Api\Repositories\UserRepository;
 use Modules\Base\General\ResponseBuilder;
 use Modules\Base\Http\Controllers\BaseController;
+use Ramsey\Uuid\Uuid;
 
 class CustomersController extends BaseController
 {
@@ -101,6 +106,72 @@ class CustomersController extends BaseController
     {
         if($request->user()->customers()->whereUuid($uuid)->count()>0){
             return parent::destroy($request, $uuid);
+        }else {
+            return ResponseBuilder::error(110);
+        }
+    }
+
+    public function getQuota(Request $request, $uuid)
+    {
+        if($request->user()->customers()->whereUuid($uuid)->count()>0){
+            $quota= $request->user()->customers()->whereUuid($uuid)->first()->quota;
+            return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
+        }else {
+            return ResponseBuilder::error(110);
+        }
+    }
+
+    public function getTransactions(Request $request, $uuid)
+    {
+        if($request->user()->customers()->whereUuid($uuid)->count()>0){
+            $transactions= $request->user()->customers()->whereUuid($uuid)->first()->quota->transactions()->paginate(15);
+            return ResponseBuilder::success(TransactionJsonResource::collection($transactions));
+
+        }else {
+            return ResponseBuilder::error(110);
+        }
+    }
+
+    public function updateQuota(Request $request, $uuid)
+    {
+        $request->validate([
+            'amount'=> 'required|numeric',
+            'is_active'=> 'boolean',
+        ]);
+
+        if($request->user()->customers()->whereUuid($uuid)->count()>0){
+
+            $quota= $request->user()->customers()->whereUuid($uuid)->first()->quota;
+            $newAmount= $quota->amount_available + $request->amount;
+            if( $newAmount > 0 ){
+                $input= $request->input();
+
+                $amountOld= $quota->amount_available;
+
+                $quota->amount_enabled += $request->amount;
+                $quota->amount_available= $newAmount;
+
+                if( isset($input['is_active']) ){
+                    $quota->is_active= $request->is_active;
+                }
+
+                $quota->save();
+
+                TransactionModel::create([
+                    'uuid' => Uuid::uuid4(),
+                    'quota_id' => $quota->id,
+                    'operation_type_id' => 2,
+                    'amount' => $request->amount,
+                    'amount_old' => $amountOld,
+                    'amount_new' => $newAmount
+                ]);
+
+                return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
+
+            }else{
+                return ResponseBuilder::errorWithHttpCode(110,422);
+            }
+
         }else {
             return ResponseBuilder::error(110);
         }

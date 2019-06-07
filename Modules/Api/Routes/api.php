@@ -42,6 +42,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('me/customers/{uuid}', 'CustomersController@meCustomersShow');
     Route::delete('me/customers/{uuid}', 'CustomersController@meCustomersDestroy');
 
+    Route::post('me/customers/{uuid}/quota-update', 'CustomersController@updateQuota');
+    Route::get('me/customers/{uuid}/quota', 'CustomersController@getQuota');
+    Route::get('me/customers/{uuid}/transactions', 'CustomersController@getTransactions');
+
     //Roles
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
     Route::get('roles/{role}/permissions', 'RolesController@rolePermissions');
