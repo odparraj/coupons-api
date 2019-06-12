@@ -53,6 +53,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('roles', 'RolesController');
 
     //Permissions
+    Route::get('permissions-all', 'PermissionsController@getAll');
     Route::apiResource('permissions', 'PermissionsController');
 
     //Products
