@@ -100,8 +100,8 @@ class CartController extends Controller
         $cartModel= Cart::model();
 
         $checkout = $this->checkout;
-        $checkout->setCart($cartModel);
         $checkout->update($request->all());
+        $checkout->setCart($cartModel);
         $order = $orderFactory->createFromCheckout($checkout);
         Cart::destroy();
 
