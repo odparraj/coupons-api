@@ -28,6 +28,7 @@ class CustomersController extends BaseController
     protected $arrValidate = [
         'name' => 'required|string|max:255',
         'email'=> 'required|string|unique:users',
+        'password'=> 'required|string|min:6',
     ];
 
     public function __construct(UserRepository $repository)
@@ -41,7 +42,7 @@ class CustomersController extends BaseController
     {
         $data = $request->input();
 
-        $data['password'] = '';
+        $data['password'] =  bcrypt($request->password);
 
         return $data;
     }
