@@ -32,6 +32,8 @@
         "tucker-eric/eloquentfilter": "^1.4",
         "vanilo/cart": "^0.5.1",
         "vanilo/category": "^0.5.1",
+        "vanilo/checkout": "^0.5.1",
+        "vanilo/order": "^0.5.1",
         "vanilo/product": "^0.5.1",
         "wildside/userstamps": "^0.5.5"
     },

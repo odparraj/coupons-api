@@ -10,6 +10,8 @@ use Modules\Api\Entities\ProductModel;
 use Modules\Api\Http\Resources\CartJsonResource;
 use Modules\Base\General\ResponseBuilder;
 use Vanilo\Cart\Facades\Cart;
+use Vanilo\Checkout\Facades\Checkout;
+use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
 {
@@ -66,6 +68,44 @@ class CartController extends Controller
         $cartModel->load('items.product');
 
         return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
+    }
+
+    public function checkout(Request $request, OrderFactory $orderFactory)
+    {
+        $user = $request->user();
+        Cart::restoreLastActiveCart($user);
+
+        $request->merge([
+            'billpayer'=> [
+                'firstname' => $user->name,
+                'lastname'  => $user->name,
+                'is_organization' => 0,
+                'company_name' => 'required_if:billpayer.is_organization,1',
+                'address'=> [
+                    'address' => 'direction test',
+                ],
+            ],
+            'ship_to_billing_address'=> 1,
+            'shippingAddress'=> [
+                'address' => 'required_unless:ship_to_billing_address,1'
+            ]
+        ]);
+
+        $cartModel= Cart::model();
+
+        $checkout = Checkout::getFacadeRoot();
+        $checkout->update($request->all());
+        $checkout->setCart($cartModel);
+        $order = $orderFactory->createFromCheckout($checkout);
+        Cart::destroy();
+
+        return $order;
+        /*if($cartModel){
+            $cartModel->load('items.product');
+            return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
+        }else{
+            return ResponseBuilder::success([]);
+        }*/
     }
 
 }
