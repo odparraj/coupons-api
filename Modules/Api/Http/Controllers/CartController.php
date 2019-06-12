@@ -10,7 +10,7 @@ use Modules\Api\Entities\ProductModel;
 use Modules\Api\Http\Resources\CartJsonResource;
 use Modules\Base\General\ResponseBuilder;
 use Vanilo\Cart\Facades\Cart;
-use Vanilo\Checkout\Facades\Checkout;
+use Vanilo\Checkout\Contracts\Checkout;
 use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
