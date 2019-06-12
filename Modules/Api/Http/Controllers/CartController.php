@@ -102,6 +102,9 @@ class CartController extends Controller
                 $newAmount= $quota->amount_available - $cartModel->total();
                 $amountOld= $quota->amount_available;
 
+                $quota->amount_available -= $cartModel->total();
+                $quota->save();
+
                 TransactionModel::create([
                     'uuid' => Uuid::uuid4(),
                     'quota_id' => $quota->id,
