@@ -7,21 +7,16 @@ namespace Modules\Api\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Api\Entities\ProductModel;
+use Modules\Api\Entities\TransactionModel;
 use Modules\Api\Http\Resources\CartJsonResource;
+use Modules\Api\Http\Resources\QuotaJsonResource;
 use Modules\Base\General\ResponseBuilder;
+use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
-use Vanilo\Checkout\Contracts\Checkout;
 use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
 {
-    protected $checkout;
-
-    public function __construct(Checkout $checkout)
-    {
-        $this->checkout = $checkout;
-    }
-
     public function index(Request $request)
     {
         $user = $request->user();
@@ -99,19 +94,26 @@ class CartController extends Controller
 
         $cartModel= Cart::model();
 
-        $checkout = $this->checkout;
-        $checkout->update($request->all());
-        $checkout->setCart($cartModel);
-        $order = $orderFactory->createFromCheckout($checkout);
-        Cart::destroy();
+        if($cartModel){
+            $quota= $request->user()->quota;
+            $newAmount= $quota->amount_available - $cartModel->total();
+            $amountOld= $quota->amount_available;
 
-        return $order;
-        /*if($cartModel){
-            $cartModel->load('items.product');
-            return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
+            TransactionModel::create([
+                'uuid' => Uuid::uuid4(),
+                'quota_id' => $quota->id,
+                'operation_type_id' => 2,
+                'amount' => -1*$cartModel->total(),
+                'amount_old' => $amountOld,
+                'amount_new' => $newAmount
+            ]);
+
+            Cart::destroy();
+
+            return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
         }else{
-            return ResponseBuilder::success([]);
-        }*/
+            return ResponseBuilder::error(110);
+        }
     }
 
 }
