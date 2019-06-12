@@ -10,6 +10,7 @@ use Modules\Api\Entities\ProductModel;
 use Modules\Api\Entities\TransactionModel;
 use Modules\Api\Http\Resources\CartJsonResource;
 use Modules\Api\Http\Resources\QuotaJsonResource;
+use Modules\Base\General\ApiCode;
 use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
@@ -96,21 +97,26 @@ class CartController extends Controller
 
         if($cartModel){
             $quota= $request->user()->quota;
-            $newAmount= $quota->amount_available - $cartModel->total();
-            $amountOld= $quota->amount_available;
 
-            TransactionModel::create([
-                'uuid' => Uuid::uuid4(),
-                'quota_id' => $quota->id,
-                'operation_type_id' => 2,
-                'amount' => -1*$cartModel->total(),
-                'amount_old' => $amountOld,
-                'amount_new' => $newAmount
-            ]);
+            if ($quota->amount_available > $cartModel->total() ){
+                $newAmount= $quota->amount_available - $cartModel->total();
+                $amountOld= $quota->amount_available;
 
-            Cart::destroy();
+                TransactionModel::create([
+                    'uuid' => Uuid::uuid4(),
+                    'quota_id' => $quota->id,
+                    'operation_type_id' => 2,
+                    'amount' => -1*$cartModel->total(),
+                    'amount_old' => $amountOld,
+                    'amount_new' => $newAmount
+                ]);
 
-            return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
+                Cart::destroy();
+
+                return ResponseBuilder::success((new QuotaJsonResource($quota))->resolve());
+            }else{
+                return ResponseBuilder::error(110);
+            }
         }else{
             return ResponseBuilder::error(110);
         }
