@@ -42,9 +42,13 @@ class UserModel extends BaseAuthenticatableModel
     public function assignQuota($amountEnabled=0)
     {
         if($this->hasRole('customer')){
-            $this->quota()->create([
+            $quota= QuotaModel::create([
+                'user_id'=> $this->id,
                 'amount_enabled' => $amountEnabled,
             ]);
+            return $quota;
+        }else{
+            return null;
         }
     }
 
