@@ -15,6 +15,12 @@ use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
 {
+    protected $checkout;
+
+    public function __construct(Checkout $checkout)
+    {
+        $this->checkout = $checkout;
+    }
 
     public function index(Request $request)
     {
@@ -93,9 +99,9 @@ class CartController extends Controller
 
         $cartModel= Cart::model();
 
-        $checkout = Checkout::getFacadeRoot();
-        $checkout->update($request->all());
+        $checkout = $this->checkout;
         $checkout->setCart($cartModel);
+        $checkout->update($request->all());
         $order = $orderFactory->createFromCheckout($checkout);
         Cart::destroy();
 
