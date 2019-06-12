@@ -70,6 +70,7 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['middleware'=>['role:customer']] , function (){
         Route::get('me/quota', 'CustomersController@meQuota');
         Route::get('me/transactions', 'CustomersController@meTransactions');
+        Route::get('me/checkout', 'CartController@checkout');
     });
 
 });
