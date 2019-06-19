@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Storage;
 Route::get('/', '\Modules\Api\Http\Controllers\ApiController@changeLog');
 
 Route::get('/storage/{folder}/{name}', function($folder, $name){
-    if (Storage::exists($folder.'/'.$name)) {
-        return response()->file(storage_path('app/'.$folder.'/'.$name));
+    if (Storage::exists('public/'.$folder.'/'.$name)) {
+        return response()->file(storage_path('app/public/'.$folder.'/'.$name));
     }
     return 'none';
 
