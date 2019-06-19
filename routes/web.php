@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Storage;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,6 +12,14 @@
 */
 
 Route::get('/', '\Modules\Api\Http\Controllers\ApiController@changeLog');
+
+Route::get('/storage/{folder}/{name}', function($folder, $name){
+    if (Storage::exists($folder.'/'.$name)) {
+        return response()->file(storage_path('app/'.$folder.'/'.$name));
+    }
+    return 'none';
+
+});
 
 /*Route::get('/', function () {
     $project = [
