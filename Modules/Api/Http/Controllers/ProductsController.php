@@ -10,6 +10,7 @@ use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
 use Modules\Api\Repositories\ProductRepository;
 use Modules\Base\General\ResponseBuilder;
 use Modules\Base\Http\Controllers\BaseController;
+use Storage;
 
 class ProductsController extends BaseController
 {
@@ -78,11 +79,12 @@ class ProductsController extends BaseController
     {
         $images= $request->files->filter('images');
         $response = parent::store($request);
-
-        if (!empty($images) && isset($response->data->id)) {
-            $product= ProductModel::whereUuid($response['data']['id'])->first();
+        
+        Storage::put('prueba.php', '<?php return '.var_export($response, true)."; \n?>" );
+        if (!empty($images) && isset($response)) {
+            
+            $product= ProductModel::whereId($response->id)->first();
             if ($product){
-
                 $product->addMultipleMediaFromRequest(['images'])->each(function ($fileAdder) {
                     $fileAdder->toMediaCollection();
                 });
@@ -91,5 +93,10 @@ class ProductsController extends BaseController
         }
 
         return $response;
+    }
+
+    protected function __storeSave($data)
+    {
+        return $this->repository->store($data, false);
     }
 }
