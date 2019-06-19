@@ -79,7 +79,7 @@ class ProductsController extends BaseController
         $images= $request->files->filter('images');
         $response = parent::store($request);
 
-        if (!empty($images) && isset($response['data']['id'])) {
+        if (!empty($images) && isset($response->data->id)) {
             $product= ProductModel::whereUuid($response['data']['id'])->first();
             if ($product){
 

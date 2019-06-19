@@ -23,6 +23,9 @@ class ProductModel extends Product implements Buyable, HasMedia
     use Filterable;
     use Userstamps;
 
+    protected $fillable= [
+        'name','sku','description','price','type','parent_id',
+    ];
     protected $primaryKey = 'id';
     protected $with= [
         'parent', 'user'
