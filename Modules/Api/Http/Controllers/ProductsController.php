@@ -7,6 +7,7 @@ namespace Modules\Api\Http\Controllers;
 use Illuminate\Http\Request;
 use Modules\Api\Entities\ProductModel;
 use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
+use Modules\Api\Http\Resources\ProductJsonResource;
 use Modules\Api\Repositories\ProductRepository;
 use Modules\Base\General\ResponseBuilder;
 use Modules\Base\Http\Controllers\BaseController;
@@ -92,7 +93,7 @@ class ProductsController extends BaseController
 
         }
 
-        return $response;
+        return ResponseBuilder::success((new ProductJsonResource($response))->resolve());
     }
 
     protected function __storeSave($data)
