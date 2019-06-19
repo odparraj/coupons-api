@@ -12,26 +12,3 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::get('/', '\Modules\Api\Http\Controllers\ApiController@changeLog');
-
-Route::get('/storage/{folder}/{name}', function($folder, $name){
-    if (Storage::exists('public/'.$folder.'/'.$name)) {
-        return response()->file(storage_path('app/public/'.$folder.'/'.$name));
-    }
-    return 'none';
-
-});
-
-/*Route::get('/', function () {
-    $project = [
-        'name' => 'Aliatu - API',
-        'description' => 'Aliatu - API',
-        'version' => '1.0.0',
-        'company' => 'Zinobe',
-        'versions' => [          
-            '1.0.0' => 'Initial version'
-
-        ]
-    ];
-    
-    return view('welcome', ['project' => $project]);
-});*/
