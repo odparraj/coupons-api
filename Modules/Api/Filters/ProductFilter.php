@@ -45,7 +45,7 @@ class ProductFilter extends BaseFilter
     public function taxons($taxons)
     {
         return $this->related('taxons', function($query) use ($taxons) {
-            return $query->whereIn('uuid', $taxons);
+            return $query->whereIn(DB::raw('taxons.uuid'), $taxons);
         });
     }
 
