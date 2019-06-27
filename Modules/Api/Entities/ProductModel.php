@@ -8,6 +8,7 @@ use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Vanilo\Category\Models\TaxonProxy;
 use Vanilo\Contracts\Buyable;
 use Vanilo\Product\Models\Product;
 use Vanilo\Support\Traits\BuyableImageSpatieV7;
@@ -75,5 +76,12 @@ class ProductModel extends Product implements Buyable, HasMedia
     public  function user()
     {
         return $this->belongsTo(UserModel::class,'created_by', 'id');
+    }
+
+    public function taxons()
+    {
+        return $this->morphToMany(
+            TaxonProxy::modelClass(), 'model', 'model_taxons', 'model_id', 'taxon_id'
+        );
     }
 }

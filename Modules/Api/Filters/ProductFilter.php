@@ -17,7 +17,10 @@ class ProductFilter extends BaseFilter
      */
     public $relations = [];
 
-    protected $arrFieldsSearch = ['id', 'name', 'created_by', 'type', 'parent_id'];
+    protected $arrFieldsSearch = [
+        'id', 'name', 'created_by',
+        'type', 'parent_id', 'min_price', 'max_price', 'taxons'
+    ];
 
     public function createdBy($id)
     {
@@ -27,6 +30,23 @@ class ProductFilter extends BaseFilter
     public function type($type)
     {
         return $this->where('type',$type);
+    }
+
+    public function minPrice($price)
+    {
+        return $this->where('price','>=', $price);
+    }
+
+    public function maxPrice($price)
+    {
+        return $this->where('price','<=', $price);
+    }
+
+    public function taxons($taxons)
+    {
+        return $this->related('taxons', function($query) use ($taxons) {
+            return $query->whereIn('uuid', $taxons);
+        });
     }
 
     public function parent($uuid)

@@ -33,6 +33,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('me/products', 'ProductsController@meProductsStore');
     Route::get('me/products', 'ProductsController@meProductsIndex');
     Route::put('me/products/{uuid}', 'ProductsController@meProductsUpdate');
+    Route::put('me/products/{uuid}/sync-taxons', 'ProductsController@meProductsSyncTaxons');
     Route::get('me/products/{uuid}', 'ProductsController@meProductsShow');
     Route::delete('me/products/{uuid}', 'ProductsController@meProductsDestroy');
 

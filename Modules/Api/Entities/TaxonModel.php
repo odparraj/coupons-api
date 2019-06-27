@@ -44,4 +44,11 @@ class TaxonModel extends Taxon
         return $filter;
     }
 
+    public function products()
+    {
+        return $this->morphedByMany(
+            ProductModel::class, 'model', 'model_taxons', 'taxon_id', 'model_id'
+        );
+    }
+
 }
