@@ -10,6 +10,7 @@ use Modules\Api\Entities\ProductModel;
 use Modules\Api\Entities\TaxonModel;
 use Modules\Api\Http\Middleware\Base\PermissibleMiddleware;
 use Modules\Api\Http\Resources\ProductJsonResource;
+use Modules\Api\Http\Resources\TaxonJsonResource;
 use Modules\Api\Repositories\ProductRepository;
 use Modules\Base\General\ResponseBuilder;
 use Modules\Base\Http\Controllers\BaseController;
@@ -72,6 +73,17 @@ class ProductsController extends BaseController
     {
         if($request->user()->products()->whereUuid($uuid)->count()>0){
             return parent::destroy($request, $uuid);
+        }else {
+            return ResponseBuilder::error(110);
+        }
+    }
+
+    public function meProductsTaxons(Request $request, $uuid)
+    {
+        if($request->user()->products()->whereUuid($uuid)->count()>0){
+            $product= $this->repository->find($uuid,false);
+
+            return ResponseBuilder::success((TaxonJsonResource::collection($product->taxons))->resolve());
         }else {
             return ResponseBuilder::error(110);
         }
