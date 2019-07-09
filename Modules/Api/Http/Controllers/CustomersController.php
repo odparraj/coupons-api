@@ -74,10 +74,12 @@ class CustomersController extends BaseController
 
     public function meCustomersStore(Request $request)
     {
+        $role = $request->role;
+        unset($request->role);
         $user= $this->store($request);
 
         if($user){
-            $user->assignRole('customer');
+            $user->assignRole($role);
             $user->assignQuota();
             return ResponseBuilder::success(['id'=> $user->uuid]);
         }else{
@@ -201,4 +203,5 @@ class CustomersController extends BaseController
         $transactions= $request->user()->quota->transactions()->paginate(15);
         return ResponseBuilder::success(TransactionJsonResource::collection($transactions));
     }
+    
 }

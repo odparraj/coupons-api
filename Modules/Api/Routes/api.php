@@ -53,6 +53,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('roles/{role}/sync-permissions', 'RolesController@syncPermissions');
     Route::get('roles/{role}/permissions', 'RolesController@rolePermissions');
     Route::apiResource('roles', 'RolesController');
+    Route::get('customer-roles', 'CustomersController@customerRoles');
 
     //Permissions
     Route::get('permissions-all', 'PermissionsController@getAll');

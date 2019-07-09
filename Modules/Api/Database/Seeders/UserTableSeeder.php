@@ -29,7 +29,7 @@ class UserTableSeeder extends Seeder
                 'uuid'=> Uuid::uuid4()
             ]);
 
-            $password = Str::random();
+            $password = '123456';
 
             $insUser = UserModel::create([
                 'uuid' => Uuid::uuid4(),
