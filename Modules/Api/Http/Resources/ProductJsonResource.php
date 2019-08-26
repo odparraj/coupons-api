@@ -25,7 +25,8 @@ class ProductJsonResource extends JsonResource
             'type'=> $this->type,
             'parent_id'=> $this->when($this->resource->parent, $this->parent->uuid ?? null),
             'user' => $this->when($this->resource->user, $this->user->name),
-            'imege'=> $this->getFirstMediaUrl()
+            'imege'=> $this->getFirstMediaUrl(),
+            'discount'=> $this->discount
         ];
     }
 }

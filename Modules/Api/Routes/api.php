@@ -70,7 +70,9 @@ Route::middleware('auth:api')->group(function () {
     //Quotas
     Route::apiResource('quotas', 'QuotasController');
 
-    Route::group(['middleware'=>['role:customer']] , function (){
+    Route::group(['middleware'=>[
+        'role:Customer-A|Customer-B|Customer-C|Customer-D|Customer-E|Customer-F|Customer-G|Customer-H|Customer-I'
+    ]] , function (){
         Route::get('me/quota', 'CustomersController@meQuota');
         Route::get('me/transactions', 'CustomersController@meTransactions');
         Route::post('me/checkout', 'CartController@checkout');

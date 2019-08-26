@@ -10,6 +10,8 @@ class UserModel extends BaseAuthenticatableModel
 {
     use HasRoles;
 
+    protected $with = ['roles'];
+
     protected function getStoredRole($role)
     {
         $roleClass = $this->getRoleClass();
@@ -41,15 +43,15 @@ class UserModel extends BaseAuthenticatableModel
 
     public function assignQuota($amountEnabled=0)
     {
-        if($this->hasRole('customer')){
+        /* if($this->hasRole('customer')){ */
             $quota= QuotaModel::create([
                 'user_id'=> $this->id,
                 'amount_enabled' => $amountEnabled,
             ]);
             return $quota;
-        }else{
+        /* }else{
             return null;
-        }
+        } */
     }
 
     public function quota()

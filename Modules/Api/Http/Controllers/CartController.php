@@ -44,7 +44,10 @@ class CartController extends Controller
         Cart::restoreLastActiveCart($user);
 
         $product = ProductModel::whereUuid($request->product_id)->first();
-
+        $role= $user->roles()->first();
+        
+        $discount= array_get($product->discount, $role->name, 0);
+        $product->price =  $product->price * (1 - $discount);
         Cart::addItem($product,$request->quantity?:1);
 
         $cartModel= Cart::model();

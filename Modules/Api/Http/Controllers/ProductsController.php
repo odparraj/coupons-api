@@ -27,7 +27,9 @@ class ProductsController extends BaseController
         'description'=> 'required|string',
         'price'=> 'required|numeric',
         'type'=> 'required|in:product,service,additional',
-        'parent_id'=> 'required_if:type,additional|exists:products,uuid'
+        'parent_id'=> 'required_if:type,additional|exists:products,uuid',
+        'discount' => 'required|array',
+        'discount.*' => 'required|numeric', 
 
     ];
 

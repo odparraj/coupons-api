@@ -74,8 +74,12 @@ class CustomersController extends BaseController
 
     public function meCustomersStore(Request $request)
     {
+        $availableRoles = config('terapp.customer_roles');
+        $request->validate([
+            'role' => 'required|in:'.implode(',',$availableRoles), 
+        ]);
         $role = $request->role;
-        unset($request->role);
+        $request->request->remove('role');
         $user= $this->store($request);
 
         if($user){
@@ -98,7 +102,22 @@ class CustomersController extends BaseController
 
     public function meCustomersUpdate(Request $request, $uuid)
     {
-        if($request->user()->customers()->whereUuid($uuid)->count()>0){
+        $availableRoles = config('terapp.customer_roles');
+        $request->validate([
+            'role' => 'required|in:'.implode(',',$availableRoles), 
+        ]);
+        $role = $request->role;
+        $request->request->remove('role');
+
+        $customer= $request->user()->customers()->whereUuid($uuid)->first();
+
+        if($customer){
+            if($request->email == $customer->email){
+                $request->request->remove('email');
+            }
+            $customer->roles()->sync([]);
+            $customer->assignRole($role);
+            
             return parent::update($request, $uuid);
         }else {
             return ResponseBuilder::error(110);
@@ -143,8 +162,15 @@ class CustomersController extends BaseController
 
         if($request->user()->customers()->whereUuid($uuid)->count()>0){
 
-            $quota= $request->user()->customers()->whereUuid($uuid)->first()->quota;
+            $userCustomer= $request->user()->customers()->whereUuid($uuid)->first();
+            $quota= $userCustomer->quota;
+            
+            if(! $quota){
+                $quota= $userCustomer->assignQuota();
+            }
+
             $newAmount= $quota->amount_available + $request->amount;
+
             if( $newAmount > 0 ){
                 $input= $request->input();
 

@@ -25,11 +25,15 @@ class ProductModel extends Product implements Buyable, HasMedia
     use Userstamps;
 
     protected $fillable= [
-        'uuid','name','sku','description','price','type','parent_id',
+        'uuid','name','sku','description','price','type','parent_id', 'discount'
     ];
     protected $primaryKey = 'id';
     protected $with= [
         'parent', 'user'
+    ];
+
+    protected $casts = [
+        'discount' => 'array'
     ];
 
     /**

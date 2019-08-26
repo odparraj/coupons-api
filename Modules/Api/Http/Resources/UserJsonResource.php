@@ -18,6 +18,7 @@ class UserJsonResource extends BaseJsonResource
             'id' => $this->uuid,
             'name' => $this->name,            
             'email' => $this->email,
+            'roles' => array_column($this->roles?$this->roles->toArray():[], 'name')
         ];
     }
 }
