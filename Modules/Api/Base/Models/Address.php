@@ -11,10 +11,11 @@
 
 namespace Modules\Api\Base\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Vanilo\Contracts\Address as AddressContract;
 use Vanilo\Support\Traits\AddressModel;
 
-class Address implements AddressContract
+class Address extends Model implements AddressContract
 {
     use AddressModel;
 
