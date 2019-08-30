@@ -3,11 +3,11 @@
 namespace Modules\Api\Repositories;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Api\Entities\OrderModel;
 use Modules\Base\Repositories\aResourceRepository;
-use Vanilo\Order\Models\Order;
 
 class OrderRepository extends aResourceRepository
 {
-    protected $model = Order::class;
+    protected $model = OrderModel::class;
     protected $jsonResource = JsonResource::class;
 }
