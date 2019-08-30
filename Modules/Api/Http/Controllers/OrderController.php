@@ -2,15 +2,26 @@
 
 namespace Modules\Api\Http\Controllers;
 
-use Illuminate\Routing\Controller;
-use Vanilo\Order\Models\Order;
+use Modules\Api\Repositories\OrderRepository;
+use Modules\Base\Http\Controllers\BaseController;
 
-class OrderController extends Controller
+class OrderController extends BaseController
 {
 
-    public function index()
+    protected $uuidToId = [
+        //'key'=> Model::class,
+        'user_id' => UserModel::class,
+    ];
+
+    protected $arrValidate = [
+        'user_id'=> 'required|exists:users,uuid',
+        'amount_enabled'=> 'required|numeric|min:0',
+    ];
+
+    public function __construct(OrderRepository $repository)
     {
-        return Order::all();
+        parent::__construct($repository);
+        //$this->middleware(PermissibleMiddleware::class);
     }
 
 }
