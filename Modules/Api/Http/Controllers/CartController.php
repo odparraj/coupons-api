@@ -16,6 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
 use Vanilo\Checkout\Contracts\Checkout;
 use Vanilo\Order\Contracts\OrderFactory;
+use Vanilo\Order\Model\Order;
 
 class CartController extends Controller
 {
@@ -92,7 +93,7 @@ class CartController extends Controller
 
         $this->vaniloCheckout->setCart($cartModel);
         $this->vaniloCheckout->update($request->all());
-
+        
         $order = $this->createFromCheckout($this->vaniloCheckout, $orderFactory);
         return $order;
         //Cart::destroy();
