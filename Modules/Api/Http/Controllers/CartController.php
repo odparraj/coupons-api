@@ -8,12 +8,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Api\Entities\ProductModel;
 use Modules\Api\Entities\TransactionModel;
+use Modules\Api\Http\Requests\CheckoutRequest;
 use Modules\Api\Http\Resources\CartJsonResource;
 use Modules\Api\Http\Resources\QuotaJsonResource;
 use Modules\Base\General\ApiCode;
 use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
+use Vanilo\Checkout\Facades\Checkout;
 use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
@@ -75,28 +77,18 @@ class CartController extends Controller
         return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
     }
 
-    public function checkout(Request $request, OrderFactory $orderFactory)
+    public function checkout(CheckoutRequest $request, OrderFactory $orderFactory)
     {
         $user = $request->user();
         Cart::restoreLastActiveCart($user);
-
-        $request->merge([
-            'billpayer'=> [
-                'firstname' => $user->name,
-                'lastname'  => $user->name,
-                'is_organization' => 0,
-                'company_name' => 'required_if:billpayer.is_organization,1',
-                'address'=> [
-                    'address' => 'direction test',
-                ],
-            ],
-            'ship_to_billing_address'=> 1,
-            'shippingAddress'=> [
-                'address' => 'required_unless:ship_to_billing_address,1'
-            ]
-        ]);
-
         $cartModel= Cart::model();
+
+        $checkout = Checkout::getFacadeRoot();
+        $checkout->update($request->all());
+        $checkout->setCart($cartModel);
+
+        $order = $this->createFromCheckout($checkout, $orderFactory);
+        //Cart::destroy();
 
         if($cartModel){
             $quota= $request->user()->quota;
@@ -126,6 +118,28 @@ class CartController extends Controller
         }else{
             return ResponseBuilder::error(110);
         }
+    }
+
+    public function createFromCheckout($checkout, $orderFactory)
+    {
+        $orderData = [
+            'billpayer'       => $checkout->getBillpayer()->toArray(),
+            'shippingAddress' => $checkout->getShippingAddress()->toArray()
+        ];
+
+        $items = $this->convertCartItemsToDataArray($checkout->getCart());
+
+        return $orderFactory->createFromDataArray($orderData, $items);
+    }
+
+    protected function convertCartItemsToDataArray($cart)
+    {
+        return $cart->getItems()->map(function ($item) {
+            return [
+                'product'  => $item->getBuyable(),
+                'quantity' => $item->getQuantity()
+            ];
+        })->all();
     }
 
 }
