@@ -11,12 +11,11 @@ use Modules\Api\Entities\TransactionModel;
 use Modules\Api\Http\Requests\CheckoutRequest;
 use Modules\Api\Http\Resources\CartJsonResource;
 use Modules\Api\Http\Resources\QuotaJsonResource;
-use Modules\Base\General\ApiCode;
 use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
 use Vanilo\Checkout\Facades\Checkout;
-use Vanilo\Order\Contracts\OrderFactory;
+use Vanilo\Order\Factories\OrderFactory as VaniloOrderFactory;
 
 class CartController extends Controller
 {
@@ -77,7 +76,7 @@ class CartController extends Controller
         return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
     }
 
-    public function checkout(CheckoutRequest $request, OrderFactory $orderFactory)
+    public function checkout(CheckoutRequest $request, VaniloOrderFactory $orderFactory)
     {
         $user = $request->user();
         Cart::restoreLastActiveCart($user);
