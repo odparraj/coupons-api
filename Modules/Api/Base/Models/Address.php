@@ -11,7 +11,6 @@
 
 namespace Modules\Api\Base\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Vanilo\Contracts\Address as AddressContract;
 use Vanilo\Support\Traits\AddressModel;
 
@@ -31,7 +30,7 @@ class Address extends Model implements AddressContract
     protected $guarded = ['id'];
 
     protected $enums = [
-        'type' => AddressType::class
+        // 'type' => AddressType::class
     ];
 
     /**
