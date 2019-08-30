@@ -87,7 +87,10 @@ class CartController extends Controller
         //$this->vaniloCheckout->update($request->all());
         
         $order = $this->createFromCheckout($orderFactory, $cartModel);
-        return $order;
+
+        $order->notes = $request->input('billpayer.address.address');
+        $order->save();
+        //return $order;
         //Cart::destroy();
 
         if($cartModel){
