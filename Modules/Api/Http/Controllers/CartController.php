@@ -15,7 +15,7 @@ use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
 use Vanilo\Checkout\Facades\Checkout;
-use Vanilo\Order\Factories\OrderFactory as VaniloOrderFactory;
+use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
 {
@@ -76,7 +76,7 @@ class CartController extends Controller
         return ResponseBuilder::success((new CartJsonResource($cartModel))->resolve());
     }
 
-    public function checkout(CheckoutRequest $request, VaniloOrderFactory $orderFactory)
+    public function checkout(CheckoutRequest $request, OrderFactory $orderFactory)
     {
         $user = $request->user();
         Cart::restoreLastActiveCart($user);
