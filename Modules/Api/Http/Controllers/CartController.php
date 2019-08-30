@@ -86,7 +86,7 @@ class CartController extends Controller
         $checkout->update($request->all());
         $checkout->setCart($cartModel);
 
-        $order = $this->createFromCheckout($checkout, $orderFactory);
+        $order = $orderFactory->createFromCheckout($checkout, $orderFactory);
         //Cart::destroy();
 
         if($cartModel){
@@ -118,27 +118,4 @@ class CartController extends Controller
             return ResponseBuilder::error(110);
         }
     }
-
-    public function createFromCheckout($checkout, $orderFactory)
-    {
-        $orderData = [
-            'billpayer'       => $checkout->getBillpayer()->toArray(),
-            'shippingAddress' => $checkout->getShippingAddress()->toArray()
-        ];
-
-        $items = $this->convertCartItemsToDataArray($checkout->getCart());
-
-        return $orderFactory->createFromDataArray($orderData, $items);
-    }
-
-    protected function convertCartItemsToDataArray($cart)
-    {
-        return $cart->getItems()->map(function ($item) {
-            return [
-                'product'  => $item->getBuyable(),
-                'quantity' => $item->getQuantity()
-            ];
-        })->all();
-    }
-
 }
