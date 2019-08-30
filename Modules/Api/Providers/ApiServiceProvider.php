@@ -4,14 +4,12 @@ namespace Modules\Api\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
-use Modules\Api\Base\CheckoutDataFactory;
 use Modules\Api\Base\OrderFactory;
 use Modules\Api\Entities\PermissionModel;
 use Modules\Api\Entities\QuotaModel;
 use Modules\Api\Observers\PermissionObserver;
 use Modules\Api\Observers\QuotaObserver;
-use Vanilo\Checkout\Contracts\CheckoutDataFactory as VaniloCheckoutDataFactory;
-use Vanilo\Order\Factories\OrderFactory as VaniloOrderFactory;
+use Vanilo\Order\Contracts\OrderFactory as VaniloOrderFactory;
 
 class ApiServiceProvider extends ServiceProvider
 {
@@ -51,7 +49,7 @@ class ApiServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
 
-        $this->app->bind(VaniloCheckoutDataFactory::class, CheckoutDataFactory::class);
+        //$this->app->bind(VaniloCheckoutDataFactory::class, CheckoutDataFactory::class);
     }
 
     /**
