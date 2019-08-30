@@ -14,11 +14,19 @@ use Modules\Api\Http\Resources\QuotaJsonResource;
 use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
-use Vanilo\Checkout\Facades\Checkout;
+use Vanilo\Checkout\Contracts\Checkout;
 use Vanilo\Order\Contracts\OrderFactory;
 
 class CartController extends Controller
 {
+
+    protected $vaniloCheckout;
+
+    public function __construct(Checkout $checkout)
+    {
+        $this->vaniloCheckout = $checkout;
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -82,11 +90,11 @@ class CartController extends Controller
         Cart::restoreLastActiveCart($user);
         $cartModel= Cart::model();
 
-        $checkout = Checkout::getFacadeRoot();
-        $checkout->update($request->all());
-        $checkout->setCart($cartModel);
+        $this->vaniloCheckout->setCart($cartModel);
+        $this->vaniloCheckout->update($request->all());
 
-        $order = $this->createFromCheckout($checkout, $orderFactory);
+        $order = $this->createFromCheckout($this->vaniloCheckout, $orderFactory);
+        return $order;
         //Cart::destroy();
 
         if($cartModel){
