@@ -3,7 +3,7 @@
 namespace Modules\Api\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Vanilo\Order\Model\Order;
+use Vanilo\Order\Models\Order;
 
 class OrderController extends Controller
 {
