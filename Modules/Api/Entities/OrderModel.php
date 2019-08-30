@@ -7,6 +7,7 @@ use EloquentFilter\Filterable;
 
 class OrderModel extends Order
 {
+    protected $table = 'orders';
     use Filterable;
     //Para el filtrado
     public function modelFilter($filter = null)
