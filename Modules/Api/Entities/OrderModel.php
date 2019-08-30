@@ -3,9 +3,11 @@
 namespace Modules\Api\Entities;
 
 use Vanilo\Order\Models\Order;
+use EloquentFilter\Filterable;
 
 class OrderModel extends Order
 {
+    use Filterable;
     //Para el filtrado
     public function modelFilter($filter = null)
     {
