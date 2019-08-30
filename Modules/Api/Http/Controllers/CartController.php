@@ -14,19 +14,11 @@ use Modules\Api\Http\Resources\QuotaJsonResource;
 use Modules\Base\General\ResponseBuilder;
 use Ramsey\Uuid\Uuid;
 use Vanilo\Cart\Facades\Cart;
-use Vanilo\Checkout\Contracts\Checkout;
-use Vanilo\Order\Contracts\OrderFactory;
+use Vanilo\Order\Factories\OrderFactory;
 use Vanilo\Order\Model\Order;
 
 class CartController extends Controller
 {
-
-    protected $vaniloCheckout;
-
-    public function __construct(Checkout $checkout)
-    {
-        $this->vaniloCheckout = $checkout;
-    }
 
     public function index(Request $request)
     {
@@ -91,10 +83,10 @@ class CartController extends Controller
         Cart::restoreLastActiveCart($user);
         $cartModel= Cart::model();
 
-        $this->vaniloCheckout->setCart($cartModel);
-        $this->vaniloCheckout->update($request->all());
+        //$this->vaniloCheckout->setCart($cartModel);
+        //$this->vaniloCheckout->update($request->all());
         
-        $order = $this->createFromCheckout($this->vaniloCheckout, $orderFactory);
+        $order = $this->createFromCheckout($orderFactory, $cartModel);
         return $order;
         //Cart::destroy();
 
@@ -126,5 +118,27 @@ class CartController extends Controller
         }else{
             return ResponseBuilder::error(110);
         }
+    }
+
+    public function createFromCheckout($orderFactory, $cart)
+    {
+        $orderData = [
+            //'billpayer'       => $checkout->getBillpayer()->toArray(),
+            //'shippingAddress' => $checkout->getShippingAddress()->toArray()
+        ];
+
+        $items = $this->convertCartItemsToDataArray($cart);
+
+        return $orderFactory->createFromDataArray($orderData, $items);
+    }
+
+    protected function convertCartItemsToDataArray($cart)
+    {
+        return $cart->getItems()->map(function ($item) {
+            return [
+                'product'  => $item->getBuyable(),
+                'quantity' => $item->getQuantity()
+            ];
+        })->all();
     }
 }

@@ -43,7 +43,7 @@ class ApiServiceProvider extends ServiceProvider
         PermissionModel::observe(PermissionObserver::class);
         QuotaModel::observe(QuotaObserver::class);
 
-        $this->app->bind(VaniloOrderFactory::class, OrderFactory::class);
+        //$this->app->bind(VaniloOrderFactory::class, OrderFactory::class);
     }
 
     /**
@@ -55,9 +55,9 @@ class ApiServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
 
-        $this->app->bind(CheckoutDataFactory::class, ModulesCheckoutDataFactory::class);
-        $this->app->bind(Address::class, ModulesAddress::class);
-        $this->app->bind(Billpayer::class, ModulesBillpayer::class);
+        //$this->app->bind(CheckoutDataFactory::class, ModulesCheckoutDataFactory::class);
+        //$this->app->bind(Address::class, ModulesAddress::class);
+        //$this->app->bind(Billpayer::class, ModulesBillpayer::class);
     }
 
     /**

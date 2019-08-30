@@ -31,7 +31,7 @@ class OrderFactory extends BaseOrderFactory
     }
 
     protected function convertCartItemsToDataArray(CheckoutSubject $cart)
-    {
+    {   
         return $cart->getItems()->map(function ($item) {
             return [
                 'product'  => $item->getBuyable(),
