@@ -86,7 +86,7 @@ class UsersController extends BaseController
             $response = ResponseBuilder::success($data);
         }
 
-        return $response ?? ResponseBuilder::error(ApiCode::AUTH_INVALID_CREDENTIALS);
+        return $response ?? ResponseBuilder::errorWithMessage(ApiCode::AUTH_INVALID_CREDENTIALS,'Credenciales incorrectas',404);
     }
 
     public function logout(Request $request)
@@ -102,7 +102,7 @@ class UsersController extends BaseController
             $response = ResponseBuilder::success();
         }
 
-        return $response ?? ResponseBuilder::error(ApiCode::AUTH_UNAUTHORIZED);
+        return $response ?? ResponseBuilder::errorWithMessage(ApiCode::AUTH_UNAUTHORIZED,"El tipo de usuario no tiene permitido realizar login",401);
     }
 
     public function syncRoles(Request $request, UserModel $user)
