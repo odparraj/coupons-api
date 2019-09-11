@@ -4,9 +4,11 @@ namespace Modules\Api\Entities;
 
 use Vanilo\Order\Models\Order;
 use EloquentFilter\Filterable;
+use Vanilo\Order\Models\OrderItemProxy;
 
 class OrderModel extends Order
 {
+    protected $with = ['items.product']; 
     protected $table = 'orders';
     use Filterable;
     //Para el filtrado
@@ -19,5 +21,10 @@ class OrderModel extends Order
         }
 
         return $filter;
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItemProxy::modelClass(),'order_id');
     }
 }
